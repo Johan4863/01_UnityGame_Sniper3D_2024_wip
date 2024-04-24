@@ -4,15 +4,21 @@ using System.Collections;
 public class SimpleAI : MonoBehaviour
 {
     public Transform[] waypoints; // Array to hold the waypoints the AI will move to
+    public Transform[] alertedRoute; // Array to hold the waypoints the AI will move to when alerted
     public float speed = 5f; // Speed at which the AI moves
+    public float alertedSpeed = 10f; //Speed of AI when got alerted
     public float delayBetweenWaypoints = 1f; // Delay between reaching each waypoint
+    public float delayBetweenAlertedWaypoints = 0.6f;
     public float rotationIntensity = 30f; // Intensity of the wobbly movement
     private int currentWaypointIndex = 0; // Index of the current waypoint
+    private int currentEscapeRouteIndex = 0; // Index of the current waypoint when alerted
     private float timeSinceReachedWaypoint = 0f; // Time elapsed since reaching the current waypoint
+    private float alertedWaipontTime = 0f;
     private Vector3 originalPosition; // Original position of the AI
     private bool isRed = false; // Flag to track if objects with the "Soldier" tag are currently red
     private bool isGolden = false; // Flag to track if objects with the "Target" tag are currently golden
-
+    private bool isDead = false; //Flag to track if object with tag "Soldier" is dead
+    public bool targetAlerted = false;
     void Start()
     {
         originalPosition = transform.position; // Store the original position
@@ -21,9 +27,37 @@ public class SimpleAI : MonoBehaviour
 
     void Update()
     {
-        // Check if there are any waypoints to move towards
-        if (waypoints.Length > 0)
+
+        if (alertedRoute.Length > 0 && targetAlerted)
         {
+            Vector3 targetPosition = alertedRoute[currentEscapeRouteIndex].position;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, alertedSpeed * Time.deltaTime);
+
+            if (transform.position == targetPosition)
+            {
+                // Increment the time since reaching the waypoint
+                alertedWaipontTime += Time.deltaTime;
+
+                // Check if the delay between waypoints has been reached
+                if (alertedWaipontTime >= delayBetweenAlertedWaypoints)
+                {
+                    // Move to the next waypoint
+                    currentEscapeRouteIndex = (currentEscapeRouteIndex + 1) % alertedRoute.Length;
+
+                    // Reset the time since reaching the waypoint
+                    alertedWaipontTime = 0f;
+                }
+            }
+        }
+        // Check if there are any waypoints to move towards
+        if (waypoints.Length > 0 && !targetAlerted)
+        {
+            //Check if enemy is dead
+            if(gameObject.tag == "DeadEnemy")
+            {
+                isDead = true;
+            }
+            if (isDead == true) return;
             // Move towards the current waypoint
             Vector3 targetPosition = waypoints[currentWaypointIndex].position;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);

@@ -134,6 +134,14 @@ public class LaserController : MonoBehaviour
             if (enemyController != null)
             {
                 enemyController.TakeDamage(1); // Apply 1 damage to the enemy
+
+
+                SimpleAI aiScript = FindObjectOfType<SimpleAI>();
+                if (aiScript != null)
+                {
+                    // Change targetAlerted on the found object
+                    aiScript.targetAlerted = true; // Set targetAlerted to true
+                }
             }
         }
     }
