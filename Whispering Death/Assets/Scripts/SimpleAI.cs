@@ -17,6 +17,7 @@ public class SimpleAI : MonoBehaviour
     private Vector3 originalPosition; // Original position of the AI
     private bool isRed = false; // Flag to track if objects with the "Soldier" tag are currently red
     private bool isGolden = false; // Flag to track if objects with the "Target" tag are currently golden
+    private bool isBlue = false; 
     private bool isDead = false; //Flag to track if object with tag "Soldier" is dead
     public bool targetAlerted = false;
     void Start()
@@ -86,6 +87,8 @@ public class SimpleAI : MonoBehaviour
         {
             ToggleSoldierColors();
             ToggleTargetColors();
+            ToggleCivilianColors();
+           
         }
     }
 
@@ -125,6 +128,8 @@ public class SimpleAI : MonoBehaviour
         isRed = !isRed; // Toggle the color state
     }
 
+   
+
     void ToggleTargetColors()
     {
         GameObject[] targets = GameObject.FindGameObjectsWithTag("Target");
@@ -147,4 +152,34 @@ public class SimpleAI : MonoBehaviour
         }
         isGolden = !isGolden; // Toggle the color state
     }
+
+   
+
+
+    void ToggleCivilianColors()
+    {
+        GameObject[] civilians = GameObject.FindGameObjectsWithTag("Civilian");
+        foreach (GameObject civilian in civilians)
+        {
+            Renderer renderer = civilian.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                if (isBlue)
+                {
+                    // Change color back to original
+                    renderer.material.color = Color.white; // Change this to the original color
+                }
+                else
+                {
+                    // Change color to blue
+                    renderer.material.color = Color.blue;
+                }
+            }
+        }
+        isBlue = !isBlue; // Toggle the color state
+    }
+
+    
+
 }
+

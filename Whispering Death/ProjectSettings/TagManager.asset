@@ -7,6 +7,11 @@ TagManager:
   - Soldier
   - Target
   - DeadEnemy
+  - Civilian
+  - Head
+  - CivilianHead
+  - TargetHead
+  - SoldierHead
   layers:
   - Default
   - TransparentFX
@@ -16,9 +21,9 @@ TagManager:
   - UI
   - solidObjectLayer
   - LaserLayer
-  - 
-  - 
-  - 
+  - Enemies
+  - Walls
+  - Objects
   - 
   - 
   - 

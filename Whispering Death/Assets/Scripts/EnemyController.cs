@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public float health = 100f; // Health of the enemy
+    public float health = 2f; // Health of the enemy
     private bool isAlive = true; // Flag indicating if the enemy is alive
+    public float maxHP = 2f;
+    
 
     // Method to apply damage to the enemy
     public void TakeDamage(float damage)
@@ -14,6 +16,16 @@ public class EnemyController : MonoBehaviour
             if (health <= 0)
             {
                 Die();
+            }
+        
+            if (health > 0 && health<maxHP)
+            {
+                SimpleAI aiScript = FindObjectOfType<SimpleAI>();
+                if (aiScript != null)
+                {
+                    // Change targetAlerted on the found object
+                    aiScript.targetAlerted = true; // Set targetAlerted to true
+                }
             }
         }
     }
