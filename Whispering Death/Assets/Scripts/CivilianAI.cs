@@ -17,6 +17,10 @@ public class CivilianAI : MonoBehaviour
             // Przemieœæ siê w kierunku najbli¿szego punktu docelowego
             if (nearestWaypoint != null)
             {
+                // Obracaj postaæ w kierunku najbli¿szego punktu docelowego
+                transform.LookAt(nearestWaypoint);
+
+                // Przemieœæ siê w kierunku najbli¿szego punktu docelowego
                 transform.position = Vector3.MoveTowards(transform.position, nearestWaypoint.position, runSpeed * Time.deltaTime);
             }
         }

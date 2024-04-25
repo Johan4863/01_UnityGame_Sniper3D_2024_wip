@@ -1186,6 +1186,7 @@ MonoBehaviour:
   delayBetweenWaypoints: 4
   delayBetweenAlertedWaypoints: 0.1
   rotationIntensity: 2
+  rotationSpeed: 5
   targetAlerted: 0
 --- !u!136 &450439743
 CapsuleCollider:
@@ -1275,6 +1276,7 @@ Transform:
   m_Children:
   - {fileID: 650186481}
   - {fileID: 681963746}
+  - {fileID: 455181117}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &450439747
@@ -1303,6 +1305,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 2
   maxHP: 2
+--- !u!1 &455181116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 455181117}
+  - component: {fileID: 455181118}
+  m_Layer: 8
+  m_Name: Enemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &455181117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455181116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 450439746}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &455181118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455181116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6e4478ce377464fbd1c3d4ac0dc029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 1.6
+  angle: 80
+  playerRef: {fileID: 0}
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 0
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  canSeePlayer: 0
 --- !u!1 &494399832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1979,7 +2035,7 @@ GameObject:
   - component: {fileID: 681963747}
   m_Layer: 8
   m_Name: Sphere
-  m_TagString: Soldier
+  m_TagString: SoldierHead
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2740,6 +2796,7 @@ MonoBehaviour:
   delayBetweenWaypoints: 4
   delayBetweenAlertedWaypoints: 1
   rotationIntensity: 5
+  rotationSpeed: 5
   targetAlerted: 0
 --- !u!136 &762504676
 CapsuleCollider:
@@ -2822,15 +2879,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762504674}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.265, y: 0.535, z: 0}
+  m_LocalRotation: {x: -0, y: -0.6770148, z: -0, w: 0.7359694}
+  m_LocalPosition: {x: 1.2634654, y: 0.535, z: 0.0016672175}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1187939104}
   - {fileID: 1684044698}
+  - {fileID: 2114598656}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -85.222, z: 0}
 --- !u!114 &762504681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3823,7 +3881,7 @@ GameObject:
   - component: {fileID: 1187939105}
   m_Layer: 8
   m_Name: Sphere
-  m_TagString: Target
+  m_TagString: TargetHead
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5343,7 +5401,7 @@ GameObject:
   - component: {fileID: 1926566578}
   m_Layer: 8
   m_Name: Sphere
-  m_TagString: Civilian
+  m_TagString: CivilianHead
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5794,6 +5852,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2114598655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2114598656}
+  - component: {fileID: 2114598657}
+  m_Layer: 8
+  m_Name: Enemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2114598656
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114598655}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 762504679}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2114598657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114598655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6e4478ce377464fbd1c3d4ac0dc029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.3
+  angle: 150
+  playerRef: {fileID: 0}
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 0
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  canSeePlayer: 0
 --- !u!1 &2133404827
 GameObject:
   m_ObjectHideFlags: 3

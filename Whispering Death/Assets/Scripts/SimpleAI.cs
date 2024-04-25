@@ -3,23 +3,38 @@ using System.Collections;
 
 public class SimpleAI : MonoBehaviour
 {
-    public Transform[] waypoints; // Array to hold the waypoints the AI will move to
-    public Transform[] alertedRoute; // Array to hold the waypoints the AI will move to when alerted
-    public float speed = 5f; // Speed at which the AI moves
-    public float alertedSpeed = 10f; //Speed of AI when got alerted
+    // AI movement related variables
+    public Transform[] waypoints; // Array of waypoints AI will move towards
+    public Transform[] alertedRoute; // Array of waypoints AI will move towards when alerted
+
+    // Speed variables
+    public float speed = 5f; // Speed of AI movement
+    public float alertedSpeed = 10f; // Speed of AI movement when alerted
+
+    // Delay variables
     public float delayBetweenWaypoints = 1f; // Delay between reaching each waypoint
-    public float delayBetweenAlertedWaypoints = 0.6f;
-    public float rotationIntensity = 30f; // Intensity of the wobbly movement
+    public float delayBetweenAlertedWaypoints = 0.6f; // Delay between waypoints when alerted
+
+    // Rotation variables
+    public float rotationIntensity = 30f; // Intensity of wobbly movement
+    public float rotationSpeed = 5f; // Speed of rotation
+
+    // Current waypoint index variables
     private int currentWaypointIndex = 0; // Index of the current waypoint
     private int currentEscapeRouteIndex = 0; // Index of the current waypoint when alerted
+
+    // Time tracking variables
     private float timeSinceReachedWaypoint = 0f; // Time elapsed since reaching the current waypoint
-    private float alertedWaipontTime = 0f;
+    private float alertedWaipontTime = 0f; // Time elapsed since reaching the current waypoint when alerted
+
+    // Other variables
     private Vector3 originalPosition; // Original position of the AI
     private bool isRed = false; // Flag to track if objects with the "Soldier" tag are currently red
     private bool isGolden = false; // Flag to track if objects with the "Target" tag are currently golden
-    private bool isBlue = false; 
-    private bool isDead = false; //Flag to track if object with tag "Soldier" is dead
-    public bool targetAlerted = false;
+    private bool isBlue = false; // Flag to track if objects with the "Civilian" tag are currently blue
+    private bool isDead = false; // Flag to track if object with tag "Soldier" is dead
+    public bool targetAlerted = false; // Flag to determine if the target has been alerted
+
     void Start()
     {
         originalPosition = transform.position; // Store the original position
@@ -28,11 +43,11 @@ public class SimpleAI : MonoBehaviour
 
     void Update()
     {
-
         if (alertedRoute.Length > 0 && targetAlerted)
         {
             Vector3 targetPosition = alertedRoute[currentEscapeRouteIndex].position;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, alertedSpeed * Time.deltaTime);
+            RotateTowards(targetPosition);
 
             if (transform.position == targetPosition)
             {
@@ -50,11 +65,12 @@ public class SimpleAI : MonoBehaviour
                 }
             }
         }
+
         // Check if there are any waypoints to move towards
         if (waypoints.Length > 0 && !targetAlerted)
         {
             //Check if enemy is dead
-            if(gameObject.tag == "DeadEnemy")
+            if (gameObject.tag == "DeadEnemy")
             {
                 isDead = true;
             }
@@ -62,6 +78,7 @@ public class SimpleAI : MonoBehaviour
             // Move towards the current waypoint
             Vector3 targetPosition = waypoints[currentWaypointIndex].position;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+            RotateTowards(targetPosition);
 
             // Check if the AI has reached the current waypoint
             if (transform.position == targetPosition)
@@ -88,9 +105,20 @@ public class SimpleAI : MonoBehaviour
             ToggleSoldierColors();
             ToggleTargetColors();
             ToggleCivilianColors();
-           
         }
     }
+
+    void RotateTowards(Vector3 targetPosition)
+    {
+        Vector3 direction = targetPosition - transform.position;
+        direction.y = 0; // Keep the direction horizontal
+        if (direction != Vector3.zero)
+        {
+            Quaternion rotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
 
     IEnumerator WobblyMovement()
     {
@@ -105,9 +133,13 @@ public class SimpleAI : MonoBehaviour
         }
     }
 
+    
+
     void ToggleSoldierColors()
     {
         GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Soldier");
+        GameObject[] soldierHeads = GameObject.FindGameObjectsWithTag("SoldierHead");
+
         foreach (GameObject soldier in soldiers)
         {
             Renderer renderer = soldier.GetComponent<Renderer>();
@@ -125,14 +157,33 @@ public class SimpleAI : MonoBehaviour
                 }
             }
         }
+
+        foreach (GameObject head in soldierHeads)
+        {
+            Renderer headRenderer = head.GetComponent<Renderer>();
+            if (headRenderer != null)
+            {
+                if (isRed)
+                {
+                    // Change color back to original
+                    headRenderer.material.color = Color.white; // Change this to the original color
+                }
+                else
+                {
+                    // Change color to red
+                    headRenderer.material.color = Color.red;
+                }
+            }
+        }
+
         isRed = !isRed; // Toggle the color state
     }
-
-   
 
     void ToggleTargetColors()
     {
         GameObject[] targets = GameObject.FindGameObjectsWithTag("Target");
+        GameObject[] targetHeads = GameObject.FindGameObjectsWithTag("TargetHead");
+
         foreach (GameObject target in targets)
         {
             Renderer renderer = target.GetComponent<Renderer>();
@@ -150,15 +201,35 @@ public class SimpleAI : MonoBehaviour
                 }
             }
         }
+
+        foreach (GameObject head in targetHeads)
+        {
+            Renderer headRenderer = head.GetComponent<Renderer>();
+            if (headRenderer != null)
+            {
+                if (isGolden)
+                {
+                    // Change color back to original
+                    headRenderer.material.color = Color.white; // Change this to the original color
+                }
+                else
+                {
+                    // Change color to golden
+                    headRenderer.material.color = Color.yellow;
+                }
+            }
+        }
+
         isGolden = !isGolden; // Toggle the color state
     }
 
-   
 
 
     void ToggleCivilianColors()
     {
         GameObject[] civilians = GameObject.FindGameObjectsWithTag("Civilian");
+        GameObject[] civilianHeads = GameObject.FindGameObjectsWithTag("CivilianHead");
+
         foreach (GameObject civilian in civilians)
         {
             Renderer renderer = civilian.GetComponent<Renderer>();
@@ -176,10 +247,30 @@ public class SimpleAI : MonoBehaviour
                 }
             }
         }
+
+        foreach (GameObject head in civilianHeads)
+        {
+            Renderer headRenderer = head.GetComponent<Renderer>();
+            if (headRenderer != null)
+            {
+                if (isBlue)
+                {
+                    // Change color back to original
+                    headRenderer.material.color = Color.white; // Change this to the original color
+                }
+                else
+                {
+                    // Change color to blue
+                    headRenderer.material.color = Color.blue;
+                }
+            }
+        }
+
         isBlue = !isBlue; // Toggle the color state
     }
 
-    
+
+
 
 }
 
