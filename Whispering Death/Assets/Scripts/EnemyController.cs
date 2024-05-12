@@ -5,8 +5,12 @@ public class EnemyController : MonoBehaviour
     public float health = 2f; // Health of the enemy
     private bool isAlive = true; // Flag indicating if the enemy is alive
     public float maxHP = 2f;
+    public float recordedHP;
     
-
+    private void Start()
+    {
+        recordedHP = maxHP;
+    }
     // Method to apply damage to the enemy
     public void TakeDamage(float damage)
     {

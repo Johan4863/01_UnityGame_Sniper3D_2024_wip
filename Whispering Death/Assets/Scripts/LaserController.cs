@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class LaserController : MonoBehaviour
 {
@@ -15,10 +16,25 @@ public class LaserController : MonoBehaviour
     private GameObject lastHitEnemy; // Reference to the last enemy hit by the laser
     private Rigidbody lastHitEnemyRigidbody; // Reference to the Rigidbody of the last hit enemy
 
+    public AudioClip shootingSound;
+    public float shootingCooldown = 1.0f; // Cooldown duration between shots
+    private float lastShootTime; // Time when the last shot was fired
+    private AudioSource audioSource;
+
+    public AmmoHud ammoHud; // Reference to the AmmoHud script
+    public EnemyController[] enemyController;
+
+
     void Start()
     {
         // Assign the laser to a specific rendering layer
         lineRenderer.gameObject.layer = LayerMask.NameToLayer("LaserLayer");
+
+        // Initialize AudioSource
+        audioSource = GetComponent<AudioSource>();
+
+        lastShootTime = -shootingCooldown; // Initialize lastShootTime to allow shooting immediately
+    
     }
 
     void Update()
@@ -30,6 +46,19 @@ public class LaserController : MonoBehaviour
             CastLaserRay();
             DisableRenderingLayerForAllCamerasExceptPlayer();
         }
+
+        if (Input.GetMouseButtonDown(0) && ammoHud != null && ammoHud.currentAmmo > 0 && Time.time > lastShootTime + shootingCooldown)
+        {
+            
+           
+
+            // Set last shoot time
+            lastShootTime = Time.time;
+
+            // Call a method to handle shooting (e.g., CastLaserRay())
+            CastLaserRay();
+        }
+
     }
 
     void FindPlayerCamera()
@@ -82,9 +111,16 @@ public class LaserController : MonoBehaviour
             DestroyBall();
         }
 
-        if (Input.GetMouseButtonDown(0) && ballObject != null)
+        if (Input.GetMouseButtonDown(0) && ballObject != null&& Time.time > lastShootTime + shootingCooldown && ammoHud != null && ammoHud.currentAmmo >0)
         {
             Shoot(hit);
+
+            
+
+            // Set last shoot time
+            lastShootTime = Time.time;
+
+            
         }
     }
 
@@ -111,15 +147,30 @@ public class LaserController : MonoBehaviour
     void Shoot(RaycastHit hit)
     {
         EnemyController enemyController = hit.collider.GetComponent<EnemyController>();
-        if (enemyController != null)
+        if (enemyController != null&& ballObject != null)
         {
             if (hit.collider.CompareTag("SoldierHead") || hit.collider.CompareTag("CivilianHead") || hit.collider.CompareTag("TargetHead"))
             {
                 enemyController.TakeDamage(2); // Apply double damage to the enemy if hit in the head
+                ammoHud.currentAmmo--;
+                // Play shooting sound
+                if (enemyController.recordedHP != enemyController.health)
+                {
+                    audioSource.PlayOneShot(shootingSound);
+                    enemyController.recordedHP=enemyController.health;
+                }
             }
-            else 
+            else
             {
                 enemyController.TakeDamage(1); // Apply normal damage to the enemy
+                ammoHud.currentAmmo--;
+                // Play shooting sound
+                if (enemyController.recordedHP != enemyController.health)
+                {
+                    audioSource.PlayOneShot(shootingSound);
+                    enemyController.recordedHP = enemyController.health;
+                }
+
             }
         }
     }
